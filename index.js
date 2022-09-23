@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from "react";
 import {
   Animated,
   BackHandler,
@@ -8,8 +8,8 @@ import {
   PanResponder,
   TouchableOpacity,
   View,
-} from 'react-native';
-import PropTypes from 'prop-types';
+} from "react-native";
+import PropTypes from "prop-types";
 
 class BottomSheet extends Component {
   constructor(props) {
@@ -24,24 +24,20 @@ class BottomSheet extends Component {
   }
 
   togglePanel = () => {
-    const {contentHeight, isPanelOpened} = this.state;
-    const {
-      animationDuration,
-      animation,
-      sliderMinHeight,
-      onOpen,
-      onClose,
-    } = this.props;
+    const { contentHeight, isPanelOpened } = this.state;
+    const { animationDuration, animation, sliderMinHeight, onOpen, onClose } =
+      this.props;
 
     Animated.timing(this.panelHeightValue, {
       duration: animationDuration,
       easing: animation,
-      toValue: this.panelHeightValue._value === 0
-        ? contentHeight - sliderMinHeight
-        : 0,
+      toValue:
+        this.panelHeightValue._value === 0
+          ? contentHeight - sliderMinHeight
+          : 0,
       useNativeDriver: false,
     }).start(() => {
-      this.setState({isPanelOpened: !isPanelOpened}, () => {
+      this.setState({ isPanelOpened: !isPanelOpened }, () => {
         if (this.state.isPanelOpened) {
           onOpen();
         } else {
@@ -58,11 +54,11 @@ class BottomSheet extends Component {
   };
 
   componentDidMount() {
-    BackHandler.addEventListener('hardwareBackPress', this._onBackPress);
+    BackHandler.addEventListener("hardwareBackPress", this._onBackPress);
   }
 
   componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this._onBackPress);
+    BackHandler.removeEventListener("hardwareBackPress", this._onBackPress);
   }
 
   _setPanResponders() {
@@ -79,23 +75,23 @@ class BottomSheet extends Component {
     });
   }
 
-  _handleScrollEndDrag = ({nativeEvent}) => {
+  _handleScrollEndDrag = ({ nativeEvent }) => {
     nativeEvent.contentOffset.y === 0 && this.togglePanel();
   };
 
-  _setSize = ({nativeEvent}) => {
-    this.setState({contentHeight: nativeEvent.layout.height}, () => {
-      const {isOpen, sliderMinHeight} = this.props;
-      const {contentHeight} = this.state;
+  _setSize = ({ nativeEvent }) => {
+    this.setState({ contentHeight: nativeEvent.layout.height }, () => {
+      const { isOpen, sliderMinHeight } = this.props;
+      const { contentHeight } = this.state;
       if (!isOpen && contentHeight) {
         this.panelHeightValue.setValue(contentHeight - sliderMinHeight);
-        this.setState({isPanelVisible: true});
+        this.setState({ isPanelVisible: true });
       }
     });
   };
 
   render() {
-    const {isPanelVisible} = this.state;
+    const { isPanelVisible } = this.state;
     const {
       sliderMaxHeight,
       wrapperStyle,
@@ -103,6 +99,7 @@ class BottomSheet extends Component {
       innerContentStyle,
       lineContainerStyle,
       lineStyle,
+      renderHeader,
       children,
     } = this.props;
 
@@ -115,20 +112,23 @@ class BottomSheet extends Component {
           ...wrapperStyle,
           maxHeight: sliderMaxHeight,
           transform: [
-            {translateY: this.panelHeightValue},
-            {scale: isPanelVisible ? 1 : 0},
+            { translateY: this.panelHeightValue },
+            { scale: isPanelVisible ? 1 : 0 },
           ],
-        }}>
+        }}
+      >
         <View
           style={[styles.outerContent, outerContentStyle]}
-          {...this._childPanResponder.panHandlers}>
+          {...this._childPanResponder.panHandlers}
+        >
           <TouchableOpacity onPress={this.togglePanel} activeOpacity={1}>
             <View style={[styles.lineContainer, lineContainerStyle]}>
               <View style={[styles.line, lineStyle]} />
             </View>
+            {renderHeader()}
           </TouchableOpacity>
           <View style={[styles.innerContent, innerContentStyle]}>
-            {typeof children === 'function'
+            {typeof children === "function"
               ? children(this._handleScrollEndDrag)
               : children}
           </View>
@@ -145,7 +145,7 @@ BottomSheet.propTypes = {
   sliderMinHeight: (props, propName, _) => {
     if (props[propName] > props.sliderMaxHeight) {
       return new Error(
-        'sliderMinHeight value cannot be greater than sliderMaxHeight',
+        "sliderMinHeight value cannot be greater than sliderMaxHeight"
       );
     }
   },
@@ -163,7 +163,7 @@ BottomSheet.propTypes = {
 BottomSheet.defaultProps = {
   children: <View />,
   isOpen: true,
-  sliderMaxHeight: Dimensions.get('window').height * 0.5,
+  sliderMaxHeight: Dimensions.get("window").height * 0.5,
   sliderMinHeight: 50,
   animation: Easing.quad,
   animationDuration: 200,
@@ -179,7 +179,7 @@ BottomSheet.defaultProps = {
 const styles = {
   container: {
     flex: 1,
-    shadowColor: '#000000',
+    shadowColor: "#000000",
     shadowOffset: {
       width: 0,
       height: 6,
@@ -190,17 +190,17 @@ const styles = {
     paddingHorizontal: 21,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     right: 0,
     left: 0,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
   },
   lineContainer: {
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   line: {
     width: 35,
@@ -208,7 +208,7 @@ const styles = {
     borderRadius: 2,
     marginTop: 18,
     marginBottom: 30,
-    backgroundColor: '#D5DDE0',
+    backgroundColor: "#D5DDE0",
   },
   outerContent: {
     flex: -1,
